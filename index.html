@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .wrap {
+            position: fixed;
+            right: 150px;
+            bottom: 150px;
+            width: 50px;
+            height: 50px;
+        }
+
+        .inner {
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+        }
+
+        .inner > img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            margin: 8px;
+            width: 70%;
+        }
+
+        .home {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: 2s;
+            border-radius: 50%;
+            width: 100%;
+        }
+
+        .home > img {
+            width: 100%;
+        }
+
+        .home > img:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="inner">
+        <img src="./img/ditu.svg" alt="">
+        <img src="./img/huochepiao.svg" alt="">
+        <img src="./img/lvxingxiang.svg" alt="">
+        <img src="./img/shaokaolu.svg" alt="">
+        <img src="./img/xiangji.svg" alt="">
+    </div>
+    <div class="home">
+        <img src="./img/zhinanzheng.svg" alt="">
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        let home = document.querySelector('.home')
+        let inners = document.querySelectorAll('.inner > img')
+        let isShow = false
+        let long = 100
+        let delay = 0.1
+        let deg = 90
+
+        function showInners() {
+            inners.forEach((item, index) => {
+                if (isShow) {
+                    item.style.transition = `1s ${delay * (inners.length - index)}s`;
+                    item.style.transform = 'rotate(0deg) scale(1)'
+                    item.style.top = 0 + 'px'
+                    item.style.left = 0 + 'px'
+                } else {
+                    let itemTranslate = getTranslate(index)
+                    let itemDelay = delay * (index + 1)
+                    item.style.transition = `1s ${itemDelay}s`;
+                    item.style.transform = `rotate(-360deg) scale(1)`
+                    item.style.top = -itemTranslate.y + 'px'
+                    item.style.left = -itemTranslate.x + 'px'
+                    item.addEventListener('click', function () {
+                        item.style.transition = `0.3s`
+                        item.style.transform = `rotate(-360deg) scale(1.8)`
+                        item.style.opacity = 0.1
+                        item.addEventListener('transitionend', scaleFun)
+                    })
+                    item.addEventListener('mousemove', function () {
+                        item.style.transition = `0.2s`
+                        item.style.transform = `rotate(-360deg) scale(1)`
+                        item.style.opacity = 0.5
+                        item.addEventListener('transitionend', scaleFun)
+                    })
+                }
+            })
+        }
+
+        function scaleFun(event) {
+            let item = event.target, tmpTransform
+            item.style.transform = `rotate(-360deg) scale(1)`
+            item.style.opacity = 1
+            item.removeEventListener('transitionend', scaleFun)
+        }
+
+        function getTranslate(index) {
+            let x = 0, y = 0, itemDeg = 0
+            itemDeg = (deg / (inners.length - 1.5)) * index
+            // 角度转弧度 (deg * Math.PI) / 180
+            x = Math.round(long * Math.sin((itemDeg * Math.PI) / 180))
+            y = Math.round(long * Math.cos((itemDeg * Math.PI) / 180))
+            return {x, y}
+        }
+
+        home.addEventListener('click', function () {
+            if (isShow) {
+                this.style.transform = 'rotate(0deg)'
+                showInners()
+            } else {
+                this.style.transform = 'rotate(-720deg)'
+                showInners()
+            }
+            isShow = !isShow
+        })
+    }
+</script>
+</body>
+</html>
